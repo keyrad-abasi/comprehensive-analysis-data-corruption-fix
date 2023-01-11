@@ -1,5 +1,9 @@
-DECLARE @InvoiceEntityCode INT = 840;
+﻿DECLARE @InvoiceEntityCode INT = 840;
 DECLARE @ReceiptDepositEntityCode INT = 450;
+
+-- مدت زمان اجرا: 1:17
+-- تعداد رکوردها: 13
+-- مطابقت با کوئری 3 واقع در PBI
 
 SELECT DIA.RequestItemRef, * 
 FROM RPA3.Receipt R
