@@ -1,13 +1,15 @@
 ﻿DECLARE @InvoiceEntityCode INT = 840;
 DECLARE @ReceiptDepositEntityCode INT = 450;
 
--- مطابقت با کوئری 3 واقع در PBI
+-- مدت زمان اجرا: 00:56
+-- تعداد رکوردها: 42
+-- مطابقت با کوئری 2 واقع در PBI
 
 DELETE FROM FIN3.AccountTransactionAnalysis
 WHERE
-	DebitEntityCode = @InvoiceEntityCode AND
-	DebitEntityRef IN (
-		SELECT RR.ReferenceRef
+	CreditEntityCode = @ReceiptDepositEntityCode AND
+	CreditEntityRef IN (
+		SELECT RD.ReceiptDepositID
 		FROM RPA3.Receipt R
 		INNER JOIN RPA3.ReceiptDeposit RD ON R.ReceiptID = RD.ReceiptRef AND RD.AccountRef IS NOT NULL
 		INNER JOIN RPA3.DocumentItemAnalyze DIA ON DIA.DocumentItemRef = RD.ReceiptDepositID AND DIA.DocumentItemType = 3
@@ -21,11 +23,11 @@ WHERE
 				DebitEntityRef = RR.ReferenceRef AND 
 				CreditEntityCode = @ReceiptDepositEntityCode AND
 				CreditEntityRef = DIA.DocumentItemRef
-		) AND DIA.DocumentItemRef NOT IN (
+		) AND DIA.DocumentItemRef IN (
 			SELECT CreditEntityRef 
 			FROM FIN3.AccountTransactionAnalysis 
 			WHERE CreditEntityCode = @ReceiptDepositEntityCode
-		) AND RR.ReferenceRef IN (
+		) AND RR.ReferenceRef NOT IN (
 			SELECT DebitEntityRef 
 			FROM FIN3.AccountTransactionAnalysis 
 			WHERE DebitEntityCode = @InvoiceEntityCode
